@@ -1,0 +1,9 @@
+chromedriver.exe
+IEDriverServer.exe
+
+.idea/
+.ipynb_checkpoints/
+__pycache__/
+log/
+*.pem
+*.rdp
