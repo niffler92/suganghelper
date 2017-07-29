@@ -1,0 +1,5 @@
+pandas
+selenium
+pytesseract
+PIL
+keyboard
