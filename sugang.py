@@ -111,6 +111,7 @@ def save_remaining(classes):
 
 
 def main():
+    log.info("Sugang go go go")
     driver = webdriver.Firefox(executable_path=os.path.join(path, 'geckodriver.exe'))
     log_in(driver, Id=HAKBUN, password=PASSWORD)
     st = time.time()
