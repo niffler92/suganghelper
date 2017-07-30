@@ -120,6 +120,7 @@ def main():
         time.sleep(0.3)
         if time.time() - st > 60:
             #  save_remaining(classes)
+            driver.quit()
             break
 
 if __name__ == '__main__':
