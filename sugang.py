@@ -63,10 +63,12 @@ def enroll_in_class(driver, classname, index, save_capture=False):
     check = table.find_element_by_xpath('//tr[{}]/td[1]/input[1]'.format(index))
     check.click()
 
-    im = ImageGrab.grab(bbox=(coordinates['x1'], coordinates['y1'],
-                              coordinates['x2'], coordinates['y2']))
     save_path = os.path.join(path, 'screenshot/',
-                             datetime.datetime.now().strftime('%m%d_%H%M%S.png'))
+                 datetime.datetime.now().strftime('%m%d_%H%M%S.png'))
+    driver.find_element_by_id('imageText').screenshot(save_path)
+    im = Image.open(save_path)
+    #  im = ImageGrab.grab(bbox=(coordinates['x1'], coordinates['y1'],
+    #                            coordinates['x2'], coordinates['y2']))
     im.save(save_path, dpi=(500, 500))
 
     text = image_to_text(filepath=save_path, save=save_capture)
