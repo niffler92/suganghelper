@@ -42,6 +42,13 @@ def check_classes(driver, classes, save_capture=False):
                           df_sugang.columns == '정원(재학생)']
                           .isnull().values].reindex()
 
+    # FIXME
+    full = np.array([int(f.split()[0]) for f in df_sugang['정원(재학생)']])
+    current = np.array([c for c in df_sugang['수강신청인원']])
+    n_enroll = sum(np.logical_and(
+                    np.greater(full, current),
+                    np.array([(cl in classes)
+                             for cl in df_sugang['교과목명(부제명)']])))
     for idx, values in df_sugang.iterrows():
         full = int(values['정원(재학생)'].split()[0])
         current = values['수강신청인원']
@@ -51,9 +58,9 @@ def check_classes(driver, classes, save_capture=False):
                 values['교과목명(부제명)'], int(current), full))
             enrolled = enroll_in_class(driver, values['교과목명(부제명)'],
                                        idx + 1, save_capture)
-            if (idx + 1) < len(classes):
+            if (idx + 1) < n_enroll:
                 driver.get('https://sugang.snu.ac.kr/sugang/cc/cc210.action')
-            time.sleep(0.3)
+            # time.sleep(0.3)
           #             if enrolled:
             #                 classes.remove(values['교과목명(부제명)'])
 
