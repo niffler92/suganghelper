@@ -86,8 +86,9 @@ def enroll_in_class(driver, classname, index, save_capture=False):
     log.info("Detected digits for {} : {}".format(save_path, text))
 
     driver.find_element_by_xpath('//*[@id="inputTextView"]').send_keys(text)
+    driver.find_element_by_xpath('//*[@id="content"]/div/div[2]/div[2]/div[2]/a').click()
     keyboard.press_and_release('enter')
-    keyboard.press_and_release('enter')  # Pop-up
+    # keyboard.press_and_release('enter')  # Pop-up
 
     return True  # FIXME
 
