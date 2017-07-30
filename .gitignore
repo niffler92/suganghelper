@@ -2,6 +2,7 @@ chromedriver.exe
 IEDriverServer.exe
 geckodriver.log
 
+screenshot/
 .idea/
 .ipynb_checkpoints/
 __pycache__/

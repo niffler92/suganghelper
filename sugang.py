@@ -2,6 +2,7 @@ import datetime, time
 import os
 
 import pandas as pd
+import numpy as np
 from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
@@ -21,7 +22,7 @@ pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files (x86)/Tesseract-OCR/te
 
 
 def log_in(driver, Id=HAKBUN, password=PASSWORD):
-    driver.get('http://sugang.snu.ac.kr')
+    driver.get('https://sugang.snu.ac.kr')
     driver.switch_to.frame(driver.find_elements_by_tag_name("iframe")[0])
 
     driver.implicitly_wait(5)
@@ -53,7 +54,7 @@ def check_classes(driver, classes, save_capture=False):
             if (idx + 1) < len(classes):
                 driver.get('https://sugang.snu.ac.kr/sugang/cc/cc210.action')
             time.sleep(0.3)
-            #             if enrolled:
+          #             if enrolled:
             #                 classes.remove(values['교과목명(부제명)'])
 
 
@@ -62,6 +63,9 @@ def enroll_in_class(driver, classname, index, save_capture=False):
     table = content.find_element_by_tag_name('table')
     check = table.find_element_by_xpath('//tr[{}]/td[1]/input[1]'.format(index))
     check.click()
+
+    if not os.path.exists('screenshot/'):
+        os.mkdir('screenshot')
 
     save_path = os.path.join(path, 'screenshot/',
                  datetime.datetime.now().strftime('%m%d_%H%M%S.png'))
@@ -112,8 +116,12 @@ def save_remaining(classes):
     pass
 
 
-def check_enrolled(classes):
-    pass
+def check_enrolled(driver, classes):
+    driver.get('https://sugang.snu.ac.kr/sugang/ca/ca110.action')
+    df_enrolled = pd.read_html(driver.page_source)[0]
+    enrolled = np.intersect1d(df_enrolled['교과목명(부제명)'], classes)
+    classes = [c for c in classes if c not in enrolled]
+    log.info("Enrolled: {}, Remaining: {}".format(enrolled, classes))
 
 
 def main():
@@ -121,11 +129,13 @@ def main():
     driver = webdriver.Firefox(executable_path=os.path.join(path, 'geckodriver.exe'))
     log_in(driver, Id=HAKBUN, password=PASSWORD)
     st = time.time()
+    n_trial = 0
     while True:
         check_classes(driver, classes, save_capture=False)
         time.sleep(0.3)
-        if time.time() - st % 500 == 0:
-            check_enrolled(classes)
+        n_trial +=1
+        if n_trial % 5 == 0:
+            check_enrolled(driver, classes)
         if time.time() - st > 3600*9:
             log.info(classes)
             save_remaining(classes)
