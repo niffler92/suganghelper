@@ -1,5 +1,6 @@
 chromedriver.exe
 IEDriverServer.exe
+geckodriver.log
 
 .idea/
 .ipynb_checkpoints/

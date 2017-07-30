@@ -96,7 +96,7 @@ def image_to_text(img=None, filepath=None, save=False):
     #     img_th = img_th.resize((3*h, 3*w))
     img_th = img_th.filter(ImageFilter.MedianFilter())
     enhancer = ImageEnhance.Contrast(img_th)
-    img_th = enhancer.enhance(2)
+    img_th = enhancer.enhance(6)
 
     text = pytesseract.image_to_string(
         img_th,
@@ -112,18 +112,26 @@ def save_remaining(classes):
     pass
 
 
+def check_enrolled(classes):
+    pass
+
+
 def main():
     log.info("Sugang go go go")
     driver = webdriver.Firefox(executable_path=os.path.join(path, 'geckodriver.exe'))
     log_in(driver, Id=HAKBUN, password=PASSWORD)
     st = time.time()
     while True:
-        check_classes(driver, classes, save_capture=True)
+        check_classes(driver, classes, save_capture=False)
         time.sleep(0.3)
-        if time.time() - st > 60:
-            #  save_remaining(classes)
+        if time.time() - st % 500 == 0:
+            check_enrolled(classes)
+        if time.time() - st > 3600*9:
+            log.info(classes)
+            save_remaining(classes)
             driver.quit()
             break
+
 
 if __name__ == '__main__':
     main()
