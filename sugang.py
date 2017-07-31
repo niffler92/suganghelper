@@ -148,7 +148,6 @@ def wait_for_new_window(driver, timeout=10):
 
 
 def main(classes):
-    log.info("Sugang go go go")
     driver = webdriver.Firefox(executable_path=os.path.join(path, 'geckodriver.exe'))
     log_in(driver, Id=HAKBUN, password=PASSWORD)
     st = time.time()
@@ -167,6 +166,7 @@ def main(classes):
 
 
 if __name__ == '__main__':
+    log.info("Sugang go go go")
     start_time = time.time()
     while start_time - time.time() < 3600*9:
         p = mp.Process(target=main, args=(classes,))
