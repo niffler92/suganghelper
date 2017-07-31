@@ -158,7 +158,7 @@ def main(classes):
         time.sleep(0.5)
         if n_to_enroll != 0:
             classes = check_enrolled(driver, classes)
-        if time.time() - st > 600:
+        if time.time() - st > 300:
             log.info(classes)
             save_remaining(classes)
             # driver.close()
