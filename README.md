@@ -1,7 +1,5 @@
 https://stackoverflow.com/questions/24370228/python-imaging-library-fails-to-grab-whole-screen
 
-Download open-cv from christopher GoHike
+Download open-cv from christopher GoHlke
 
-TODO:  
-os.path.exists --> make screenshot directory
-check enrolled
+Download Tesseract (exe file)

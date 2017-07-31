@@ -1,6 +1,7 @@
 chromedriver.exe
 IEDriverServer.exe
 geckodriver.log
+settings.py
 
 screenshot/
 .idea/

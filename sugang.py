@@ -13,7 +13,7 @@ from PIL import Image, ImageGrab, ImageFilter, ImageEnhance
 import keyboard
 import cv2
 
-from settings import HAKBUN, PASSWORD, classes, coordinates
+from settings import HAKBUN, PASSWORD, classes
 from utils import log
 from contextlib import contextmanager
 
