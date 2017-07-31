@@ -15,6 +15,7 @@ import cv2
 
 from settings import HAKBUN, PASSWORD, classes, coordinates
 from utils import log
+from contextlib import contextmanager
 
 
 path = os.path.abspath('./')
@@ -63,6 +64,7 @@ def check_classes(driver, classes, save_capture=False):
             # time.sleep(0.3)
           #             if enrolled:
             #                 classes.remove(values['교과목명(부제명)'])
+    return n_enroll
 
 
 def enroll_in_class(driver, classname, index, save_capture=False):
@@ -78,18 +80,20 @@ def enroll_in_class(driver, classname, index, save_capture=False):
                  datetime.datetime.now().strftime('%m%d_%H%M%S.png'))
     driver.find_element_by_id('imageText').screenshot(save_path)
     im = Image.open(save_path)
-    #  im = ImageGrab.grab(bbox=(coordinates['x1'], coordinates['y1'],
-    #                            coordinates['x2'], coordinates['y2']))
     im.save(save_path, dpi=(500, 500))
 
     text = image_to_text(filepath=save_path, save=save_capture)
     log.info("Detected digits for {} : {}".format(save_path, text))
-
     driver.find_element_by_xpath('//*[@id="inputTextView"]').send_keys(text)
-    driver.find_element_by_xpath('//*[@id="content"]/div/div[2]/div[2]/div[2]/a').click()
-    keyboard.press_and_release('enter')
-    # keyboard.press_and_release('enter')  # Pop-up
 
+    driver.find_element_by_xpath('//*[@id="content"]/div/div[2]/div[2]/div[2]/a').click()
+    try:
+        WebDriverWait(driver, 10).until(EC.alert_is_present())
+        alert = driver.switch_to_alert();
+        alert.accept()
+    except Exception as e:
+        log.info("{}, No pop up appeared".format(e))
+    # keyboard.press_and_release('enter')
     return True  # FIXME
 
 
@@ -130,26 +134,37 @@ def check_enrolled(driver, classes):
     enrolled = np.intersect1d(df_enrolled['교과목명(부제명)'], classes)
     classes = [c for c in classes if c not in enrolled]
     log.info("Enrolled: {}, Remaining: {}".format(enrolled, classes))
+    return classes
 
 
-def main():
+@contextmanager
+def wait_for_new_window(driver, timeout=10):
+    handles_before = driver.window_handles
+    yield 
+    log.info(driver.window_handles)
+    WebDriverWait(driver, timeout).until(
+        lambda driver: len(handles_before) != len(driver.window_handles))
+
+
+def main(classes):
     log.info("Sugang go go go")
     driver = webdriver.Firefox(executable_path=os.path.join(path, 'geckodriver.exe'))
     log_in(driver, Id=HAKBUN, password=PASSWORD)
     st = time.time()
     n_trial = 0
+    classes = check_enrolled(driver, classes)
     while True:
-        check_classes(driver, classes, save_capture=False)
-        time.sleep(0.3)
-        n_trial +=1
-        if n_trial % 5 == 0:
-            check_enrolled(driver, classes)
+        n_to_enroll = check_classes(driver, classes, save_capture=False)
+        time.sleep(0.5)
+        if n_trial % 5 == 0 and n_to_enroll != 0:
+            classes = check_enrolled(driver, classes)
         if time.time() - st > 3600*9:
             log.info(classes)
             save_remaining(classes)
             driver.quit()
             break
+        n_trial += 1
 
 
 if __name__ == '__main__':
-    main()
+    main(classes)
