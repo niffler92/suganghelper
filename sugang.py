@@ -1,5 +1,7 @@
 import datetime, time
 import os
+from contextlib import contextmanager
+import multiprocessing as mp
 
 import pandas as pd
 import numpy as np
@@ -15,7 +17,6 @@ import cv2
 
 from settings import HAKBUN, PASSWORD, classes
 from utils import log
-from contextlib import contextmanager
 
 
 path = os.path.abspath('./')
@@ -140,7 +141,7 @@ def check_enrolled(driver, classes):
 @contextmanager
 def wait_for_new_window(driver, timeout=10):
     handles_before = driver.window_handles
-    yield 
+    yield
     log.info(driver.window_handles)
     WebDriverWait(driver, timeout).until(
         lambda driver: len(handles_before) != len(driver.window_handles))
@@ -151,20 +152,23 @@ def main(classes):
     driver = webdriver.Firefox(executable_path=os.path.join(path, 'geckodriver.exe'))
     log_in(driver, Id=HAKBUN, password=PASSWORD)
     st = time.time()
-    n_trial = 0
     classes = check_enrolled(driver, classes)
     while True:
         n_to_enroll = check_classes(driver, classes, save_capture=False)
         time.sleep(0.5)
-        if n_trial % 5 == 0 and n_to_enroll != 0:
+        if n_to_enroll != 0:
             classes = check_enrolled(driver, classes)
-        if time.time() - st > 3600*9:
+        if time.time() - st > 300:
             log.info(classes)
             save_remaining(classes)
+            driver.close()
             driver.quit()
             break
-        n_trial += 1
 
 
 if __name__ == '__main__':
-    main(classes)
+    start_time = time.time()
+    while start_time - time.time() < 3600*9:
+        p = mp.Process(target=main, args=(classes,))
+        p.start()
+        p.join()
