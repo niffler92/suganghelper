@@ -43,6 +43,10 @@ def check_classes(driver, classes, save_capture=False):
     df_sugang = df_sugang[~df_sugang.loc[:,
                           df_sugang.columns == '정원(재학생)']
                           .isnull().values].reindex()
+    if set(classes) - set(df_sugang['교과목명(부제명)']):
+        log.warning("These subjects are not in Gwansim list. " \
+                    "Please check and add again: {}".format(list(
+                        set(classes)-set(df_sugang['교과목명(부제명)']))))
 
     # FIXME
     full = np.array([int(f.split()[0]) for f in df_sugang['정원(재학생)']])
