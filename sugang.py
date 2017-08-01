@@ -64,7 +64,7 @@ def check_classes(driver, classes, save_capture=False):
                 values['교과목명(부제명)'], int(current), full))
             enrolled = enroll_in_class(driver, values['교과목명(부제명)'],
                                        idx + 1, save_capture)
-            if (idx + 1) < n_enroll:
+            if (idx + 1) < len(df_sugang):
                 driver.get('https://sugang.snu.ac.kr/sugang/cc/cc210.action')
             # time.sleep(0.3)
             #             if enrolled:
@@ -99,7 +99,6 @@ def enroll_in_class(driver, classname, index, save_capture=False):
     except Exception as e:
         log.info("{}, No pop up appeared".format(e))
     # keyboard.press_and_release('enter')
-    driver.get('https://sugang.snu.ac.kr/sugang/cc/cc210.action')
     return True  # FIXME
 
 
