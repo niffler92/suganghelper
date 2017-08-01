@@ -59,7 +59,7 @@ def check_classes(driver, classes, save_capture=False):
         full = int(values['정원(재학생)'].split()[0])
         current = values['수강신청인원']
 
-        if full >= current and values['교과목명(부제명)'] in classes:
+        if full > current and values['교과목명(부제명)'] in classes:
             log.info("Trying to enroll in class {}: ({}/{})".format(
                 values['교과목명(부제명)'], int(current), full))
             enrolled = enroll_in_class(driver, values['교과목명(부제명)'],
