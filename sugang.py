@@ -64,10 +64,10 @@ def check_classes(driver, classes, save_capture=False):
                 values['교과목명(부제명)'], int(current), full))
             enrolled = enroll_in_class(driver, values['교과목명(부제명)'],
                                        idx + 1, save_capture)
-            if (idx + 1) < n_enroll:
+            if (idx + 1) < len(df_sugang):
                 driver.get('https://sugang.snu.ac.kr/sugang/cc/cc210.action')
             # time.sleep(0.3)
-          #             if enrolled:
+            #             if enrolled:
             #                 classes.remove(values['교과목명(부제명)'])
     return n_enroll
 
@@ -123,8 +123,9 @@ def image_to_text(img=None, filepath=None, save=False):
         img_th,
         config='--psm 11 --oem 2 -c tessedit_char_whitelist=0123456789')
     text = ''.join(text.split())
-
-    img_th.save(filepath, dpi=(500, 500)) if save else os.remove(filepath)
+    newfilepath = save_path = os.path.join(path, 'screenshot/',
+                     datetime.datetime.now().strftime('%m%d_%H%M%S__modified.png'))
+    img_th.save(newfilepath, dpi=(500, 500)) if save else os.remove(filepath)
 
     return text
 
@@ -157,7 +158,7 @@ def main(classes):
     st = time.time()
     classes = check_enrolled(driver, classes)
     while True:
-        n_to_enroll = check_classes(driver, classes, save_capture=False)
+        n_to_enroll = check_classes(driver, classes, save_capture=True)
         time.sleep(0.4)
         if n_to_enroll != 0:
             classes = check_enrolled(driver, classes)
@@ -165,6 +166,7 @@ def main(classes):
             log.info(classes)
             save_remaining(classes)
             # driver.close()
+            driver.delete_all_cookies()
             driver.quit()
             break
 
