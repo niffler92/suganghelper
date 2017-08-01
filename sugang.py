@@ -154,7 +154,7 @@ def main(classes):
     classes = check_enrolled(driver, classes)
     while True:
         n_to_enroll = check_classes(driver, classes, save_capture=False)
-        time.sleep(0.5)
+        time.sleep(0.4)
         if n_to_enroll != 0:
             classes = check_enrolled(driver, classes)
         if time.time() - st > 300:

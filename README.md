@@ -6,3 +6,4 @@ Download [Tesseract](https://github.com/tesseract-ocr/tesseract/wiki/4.0-with-LS
 Miscellaneous  
     - https://stackoverflow.com/questions/24370228/python-imaging-library-fails-to-grab-whole-screen
 
+## Note: 관심강좌에 존재하는 과목만 수강신청됩니다.
