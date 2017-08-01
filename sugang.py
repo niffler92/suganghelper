@@ -59,7 +59,7 @@ def check_classes(driver, classes, save_capture=False):
         full = int(values['정원(재학생)'].split()[0])
         current = values['수강신청인원']
 
-        if full > current and values['교과목명(부제명)'] in classes:
+        if full >= current and values['교과목명(부제명)'] in classes:
             log.info("Trying to enroll in class {}: ({}/{})".format(
                 values['교과목명(부제명)'], int(current), full))
             enrolled = enroll_in_class(driver, values['교과목명(부제명)'],
@@ -67,7 +67,7 @@ def check_classes(driver, classes, save_capture=False):
             if (idx + 1) < n_enroll:
                 driver.get('https://sugang.snu.ac.kr/sugang/cc/cc210.action')
             # time.sleep(0.3)
-          #             if enrolled:
+            #             if enrolled:
             #                 classes.remove(values['교과목명(부제명)'])
     return n_enroll
 
@@ -99,6 +99,7 @@ def enroll_in_class(driver, classname, index, save_capture=False):
     except Exception as e:
         log.info("{}, No pop up appeared".format(e))
     # keyboard.press_and_release('enter')
+    driver.get('https://sugang.snu.ac.kr/sugang/cc/cc210.action')
     return True  # FIXME
 
 
@@ -123,8 +124,9 @@ def image_to_text(img=None, filepath=None, save=False):
         img_th,
         config='--psm 11 --oem 2 -c tessedit_char_whitelist=0123456789')
     text = ''.join(text.split())
-
-    img_th.save(filepath, dpi=(500, 500)) if save else os.remove(filepath)
+    newfilepath = save_path = os.path.join(path, 'screenshot/',
+                     datetime.datetime.now().strftime('%m%d_%H%M%S__modified.png'))
+    img_th.save(newfilepath, dpi=(500, 500)) if save else os.remove(filepath)
 
     return text
 
@@ -157,7 +159,7 @@ def main(classes):
     st = time.time()
     classes = check_enrolled(driver, classes)
     while True:
-        n_to_enroll = check_classes(driver, classes, save_capture=False)
+        n_to_enroll = check_classes(driver, classes, save_capture=True)
         time.sleep(0.4)
         if n_to_enroll != 0:
             classes = check_enrolled(driver, classes)
@@ -165,6 +167,7 @@ def main(classes):
             log.info(classes)
             save_remaining(classes)
             # driver.close()
+            driver.delete_all_cookies()
             driver.quit()
             break
 
