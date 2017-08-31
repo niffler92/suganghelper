@@ -91,7 +91,8 @@ def enroll_in_class(driver, classname, index, save_capture=False):
     log.info("Detected digits for {} : {}".format(save_path, text))
     driver.find_element_by_xpath('//*[@id="inputTextView"]').send_keys(text)
 
-    driver.find_element_by_xpath('//*[@id="content"]/div/div[2]/div[2]/div[2]/a').click()
+    driver.find_element_by_css_selector('.apply_btn').click()
+    #driver.find_element_by_xpath('//*[@id="content"]/div/div[2]/div[2]/div[2]/a').click()
     try:
         WebDriverWait(driver, 10).until(EC.alert_is_present())
         alert = driver.switch_to_alert();
@@ -158,7 +159,7 @@ def main(classes):
     st = time.time()
     classes = check_enrolled(driver, classes)
     while True:
-        n_to_enroll = check_classes(driver, classes, save_capture=True)
+        n_to_enroll = check_classes(driver, classes, save_capture=False)
         time.sleep(0.4)
         if n_to_enroll != 0:
             classes = check_enrolled(driver, classes)
