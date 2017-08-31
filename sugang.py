@@ -10,6 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.common.exceptions import WebDriverException
+#from seleniumrequests import Firefox
 import pytesseract
 from PIL import Image, ImageGrab, ImageFilter, ImageEnhance
 import keyboard
@@ -17,6 +18,7 @@ import cv2
 
 from settings import HAKBUN, PASSWORD, classes
 from utils import log
+from crawler import post_example
 
 
 path = os.path.abspath('./')
@@ -91,15 +93,15 @@ def enroll_in_class(driver, classname, index, save_capture=False):
     log.info("Detected digits for {} : {}".format(save_path, text))
     driver.find_element_by_xpath('//*[@id="inputTextView"]').send_keys(text)
 
+    #apply_by_request(driver, text, index-1)
     driver.find_element_by_css_selector('.apply_btn').click()
-    #driver.find_element_by_xpath('//*[@id="content"]/div/div[2]/div[2]/div[2]/a').click()
+    ##driver.find_element_by_xpath('//*[@id="content"]/div/div[2]/div[2]/div[2]/a').click()
     try:
         WebDriverWait(driver, 10).until(EC.alert_is_present())
         alert = driver.switch_to_alert();
         alert.accept()
     except Exception as e:
         log.info("{}, No pop up appeared".format(e))
-    # keyboard.press_and_release('enter')
     return True  # FIXME
 
 
@@ -152,9 +154,19 @@ def wait_for_new_window(driver, timeout=10):
     WebDriverWait(driver, timeout).until(
         lambda driver: len(handles_before) != len(driver.window_handles))
 
+def apply_by_request(driver, text, index):
+    post_example.subject_idx = index
+    post_example.text = text
+    print(post_example.payload)
+    response = driver.request("POST", post_example.url,
+                   data=post_example.payload,
+                   headers=post_example.headers)
+    log.info(response.text)
+
 
 def main(classes):
     driver = webdriver.Firefox(executable_path=os.path.join(path, 'geckodriver.exe'))
+    #driver = Firefox(executable_path=os.path.join(path, 'geckodriver.exe'))
     log_in(driver, Id=HAKBUN, password=PASSWORD)
     st = time.time()
     classes = check_enrolled(driver, classes)

@@ -5,9 +5,24 @@ import requests
 """
 Note that payload is where we fill in check(which subject) and inputText(image)
 """
-url = "http://sugang.snu.ac.kr/sugang/ca/ca101.action"
-
-payload = "check=5&inputText=08&ltNo=001&ltNo=002&ltNo=001&ltNo=002&ltNo=001&ltNo=001&ltNo=001&ltNo=001&ltNo=001&openDetaShtmFg=U000300001&openDetaShtmFg=U000300001&openDetaShtmFg=U000300001&openDetaShtmFg=U000300001&openDetaShtmFg=U000300001&openDetaShtmFg=U000300001&openDetaShtmFg=U000300001&openDetaShtmFg=U000300001&openDetaShtmFg=U000300001&openSchyy=2017&openSchyy=2017&openSchyy=2017&openSchyy=2017&openSchyy=2017&openSchyy=2017&openSchyy=2017&openSchyy=2017&openSchyy=2017&openShtmFg=U000200002&openShtmFg=U000200002&openShtmFg=U000200002&openShtmFg=U000200002&openShtmFg=U000200002&openShtmFg=U000200002&openShtmFg=U000200002&openShtmFg=U000200002&openShtmFg=U000200002&sbjtCd=051.005&sbjtCd=051.005&sbjtCd=051.017&sbjtCd=051.017&sbjtCd=326.725A&sbjtCd=3341.362&sbjtCd=3341.753&sbjtCd=722.212&sbjtCd=M1522.000600&sortKey=&sortOrder=&workType=I"
+subject_idx = None
+text = None
+url = "http://sugang.snu.ac.kr/sugang/ca/ca210.action"
+payload = "check={}&inputText={}&ltNo=001&ltNo=002&ltNo=001&ltNo=002&ltNo="\
+          "001&ltNo=001&ltNo=001&ltNo=001&ltNo=001&openDetaShtmFg=U000300001"\
+          "&openDetaShtmFg=U000300001&openDetaShtmFg=U000300001&openDetaShtmFg="\
+          "U000300001&openDetaShtmFg=U000300001&openDetaShtmFg="\
+          "U000300001&openDetaShtmFg=U000300001&openDetaShtmFg=U000300001&"\
+          "openDetaShtmFg=U000300001&openSchyy=2017&openSchyy=2017&"\
+          "openSchyy=2017&openSchyy=2017&openSchyy=2017&openSchyy=2017&"\
+          "openSchyy=2017&openSchyy=2017&openSchyy=2017&openShtmFg="\
+          "U000200002&openShtmFg=U000200002&openShtmFg=U000200002&"\
+          "openShtmFg=U000200002&openShtmFg=U000200002&openShtmFg="\
+          "U000200002&openShtmFg=U000200002&openShtmFg=U000200002&"\
+          "openShtmFg=U000200002&sbjtCd=051.005&sbjtCd=051.005&sbjtCd="\
+          "051.017&sbjtCd=051.017&sbjtCd=326.725A&sbjtCd=3341.362&sbjtCd="\
+          "3341.753&sbjtCd=722.212&sbjtCd=M1522.000600&sortKey=&sortOrder="\
+          "&workType=I".format(subject_idx, text)
 headers = {
     'origin': "http://sugang.snu.ac.kr",
     'upgrade-insecure-requests': "1",
@@ -22,6 +37,6 @@ headers = {
     'postman-token': "69e36d00-3d56-370d-53c7-86375b824909"
     }
 
-response = requests.request("POST", url, data=payload, headers=headers)
+#response = requests.request("POST", url, data=payload, headers=headers)
 
-print(response.text)
+# print(response.text)
