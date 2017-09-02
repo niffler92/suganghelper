@@ -174,7 +174,7 @@ def main(classes):
 if __name__ == '__main__':
     log.info("Sugang go go go")
     start_time = time.time()
-    while start_time - time.time() < 3600*9:
+    while time.time() - start_time < 60: # 3600*9:
         p = mp.Process(target=main, args=(classes,))
         p.start()
         p.join()
