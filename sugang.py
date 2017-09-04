@@ -99,6 +99,7 @@ def enroll_in_class(driver, classname, index, save_capture=False):
     try:
         WebDriverWait(driver, 10).until(EC.alert_is_present())
         alert = driver.switch_to_alert();
+        log.info("Pop Up: {}".format(alert.text))
         alert.accept()
     except Exception as e:
         log.info("{}, No pop up appeared".format(e))
@@ -187,7 +188,7 @@ def main(classes):
 if __name__ == '__main__':
     log.info("Sugang go go go")
     start_time = time.time()
-    while time.time() - start_time < 60: # 3600*9:
+    while time.time() - start_time < 3600*9: # 3600*9:
         p = mp.Process(target=main, args=(classes,))
         p.start()
         p.join()
