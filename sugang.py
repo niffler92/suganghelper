@@ -16,7 +16,7 @@ from PIL import Image, ImageGrab, ImageFilter, ImageEnhance
 import keyboard
 import cv2
 
-from settings import HAKBUN, PASSWORD, classes
+from settings import HAKBUN, PASSWORD, classes, reset_time, total_time
 from utils import log
 from crawler import post_example
 
@@ -176,7 +176,7 @@ def main(classes):
         time.sleep(0.4)
         if n_to_enroll != 0:
             classes = check_enrolled(driver, classes)
-        if time.time() - st > 300:
+        if time.time() - st > reset_time:
             log.info(classes)
             save_remaining(classes)
             # driver.close()
@@ -188,7 +188,7 @@ def main(classes):
 if __name__ == '__main__':
     log.info("Sugang go go go")
     start_time = time.time()
-    while time.time() - start_time < 3600*9: # 3600*9:
+    while time.time() - start_time < total_time: # 3600*9:
         p = mp.Process(target=main, args=(classes,))
         p.start()
         p.join()
